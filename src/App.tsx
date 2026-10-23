@@ -49,95 +49,28 @@ import {
 } from './services/supabase';
 
 export default function App() {
-  // Persistence Keys (v4 to bust old corrupted browser cache)
-  const STORAGE_KEY_CONFIG = 'aurora_luxe_config_v4';
-  const STORAGE_KEY_PRODUCTS = 'aurora_luxe_products_v4';
-  const STORAGE_KEY_CART = 'aurora_luxe_cart_v4';
-  const STORAGE_KEY_WISHLIST = 'aurora_luxe_wishlist_v4';
-  const STORAGE_KEY_ORDERS = 'aurora_luxe_orders_v4';
-  const STORAGE_KEY_EXPENSES = 'aurora_luxe_expenses_v4';
+  // Persistence Keys
+  const STORAGE_KEY_CONFIG = 'aurora_luxe_config_v2';
+  const STORAGE_KEY_PRODUCTS = 'aurora_luxe_products_v2';
+  const STORAGE_KEY_CART = 'aurora_luxe_cart_v2';
+  const STORAGE_KEY_WISHLIST = 'aurora_luxe_wishlist_v2';
+  const STORAGE_KEY_ORDERS = 'aurora_luxe_orders_v2';
+  const STORAGE_KEY_EXPENSES = 'aurora_luxe_expenses_v2';
 
-  // Automatically purge legacy corrupted localStorage keys
-  useEffect(() => {
-    try {
-      localStorage.removeItem('aurora_luxe_config_v2');
-      localStorage.removeItem('aurora_luxe_products_v2');
-      localStorage.removeItem('aurora_luxe_config_v3');
-      localStorage.removeItem('aurora_luxe_products_v3');
-    } catch {}
-  }, []);
-
-  // State initialization with complete fail-safe localStorage fallback
+  // State initialization with localStorage fallback
   const [storeConfig, setStoreConfig] = useState<StoreConfig>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY_CONFIG);
       if (saved) {
         const parsed = JSON.parse(saved);
-        const validBlockIds: BlockId[] = [
-          'hero', 'categoryShowcase', 'trustBadges', 'flashSale', 'valueProps', 
-          'products', 'promoBanner', 'testimonials', 'faq', 'contact', 'footer'
-        ];
-        const rawOrder = Array.isArray(parsed.blockOrder) ? parsed.blockOrder : [];
-        const safeOrder = rawOrder.filter((id: any) => validBlockIds.includes(id));
-        const finalOrder = safeOrder.length > 0 ? safeOrder : DEFAULT_STORE_CONFIG.blockOrder;
-
         return {
           ...DEFAULT_STORE_CONFIG,
           ...parsed,
           header: { ...DEFAULT_STORE_CONFIG.header, ...(parsed.header || {}) },
-          theme: { 
-            ...DEFAULT_STORE_CONFIG.theme, 
-            ...(parsed.theme || {}),
-            palette: parsed.theme?.palette || DEFAULT_STORE_CONFIG.theme.palette,
-            currency: parsed.theme?.currency || DEFAULT_STORE_CONFIG.theme.currency,
-          },
-          hero: {
-            ...DEFAULT_STORE_CONFIG.hero,
-            ...(parsed.hero || {}),
-            visible: parsed.hero?.visible !== undefined ? Boolean(parsed.hero.visible) : true,
-          },
-          categoryShowcase: {
-            ...DEFAULT_STORE_CONFIG.categoryShowcase,
-            ...(parsed.categoryShowcase || {}),
-            visible: parsed.categoryShowcase?.visible !== undefined ? Boolean(parsed.categoryShowcase.visible) : true,
-          },
-          productGrid: {
-            ...DEFAULT_STORE_CONFIG.productGrid,
-            ...(parsed.productGrid || {}),
-            visible: parsed.productGrid?.visible !== undefined ? Boolean(parsed.productGrid.visible) : true,
-          },
-          valueProps: {
-            ...DEFAULT_STORE_CONFIG.valueProps,
-            ...(parsed.valueProps || {}),
-            visible: parsed.valueProps?.visible !== undefined ? Boolean(parsed.valueProps.visible) : true,
-          },
-          promoBanner: {
-            ...DEFAULT_STORE_CONFIG.promoBanner,
-            ...(parsed.promoBanner || {}),
-            visible: parsed.promoBanner?.visible !== undefined ? Boolean(parsed.promoBanner.visible) : true,
-          },
-          testimonials: {
-            ...DEFAULT_STORE_CONFIG.testimonials,
-            ...(parsed.testimonials || {}),
-            visible: parsed.testimonials?.visible !== undefined ? Boolean(parsed.testimonials.visible) : true,
-          },
-          faq: {
-            ...DEFAULT_STORE_CONFIG.faq,
-            ...(parsed.faq || {}),
-            visible: parsed.faq?.visible !== undefined ? Boolean(parsed.faq.visible) : true,
-          },
-          contact: {
-            ...DEFAULT_STORE_CONFIG.contact,
-            ...(parsed.contact || {}),
-            visible: parsed.contact?.visible !== undefined ? Boolean(parsed.contact.visible) : true,
-          },
-          footer: {
-            ...DEFAULT_STORE_CONFIG.footer,
-            ...(parsed.footer || {}),
-            visible: parsed.footer?.visible !== undefined ? Boolean(parsed.footer.visible) : true,
-          },
-          blockOrder: finalOrder,
-          categories: (parsed.categories && parsed.categories.length > 0) ? parsed.categories : DEFAULT_STORE_CONFIG.categories,
+          theme: { ...DEFAULT_STORE_CONFIG.theme, ...(parsed.theme || {}) },
+          trustBadges: { ...DEFAULT_STORE_CONFIG.trustBadges, ...(parsed.trustBadges || {}) },
+          flashSale: { ...DEFAULT_STORE_CONFIG.flashSale, ...(parsed.flashSale || {}) },
+          faq: { ...DEFAULT_STORE_CONFIG.faq, ...(parsed.faq || {}) },
           paymentMethods: (parsed.paymentMethods && parsed.paymentMethods.length > 0)
             ? parsed.paymentMethods
             : DEFAULT_STORE_CONFIG.paymentMethods,
@@ -868,14 +801,10 @@ export default function App() {
               onSelectProduct={handleOpenProductPage}
             />
           ) : (
-            (() => {
-              const activeOrder = storeConfig.blockOrder && storeConfig.blockOrder.length > 0
-                ? storeConfig.blockOrder
-                : DEFAULT_STORE_CONFIG.blockOrder;
-              const rendered = activeOrder.map((blockId, index) => renderBlock(blockId, index)).filter(Boolean);
-              if (rendered.length > 0) return rendered;
-              return DEFAULT_STORE_CONFIG.blockOrder.map((blockId, index) => renderBlock(blockId, index));
-            })()
+            (storeConfig.blockOrder && storeConfig.blockOrder.length > 0
+              ? storeConfig.blockOrder
+              : DEFAULT_STORE_CONFIG.blockOrder
+            ).map((blockId, index) => renderBlock(blockId, index))
           )}
         </main>
       </div>
@@ -885,7 +814,7 @@ export default function App() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         items={cartItems}
-        currency={storeConfig.theme?.currency || 'Rs.'}
+        currency={storeConfig.theme.currency}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveCartItem}
         onProceedToCheckout={() => {
@@ -905,7 +834,7 @@ export default function App() {
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         items={cartItems}
-        currency={storeConfig.theme?.currency || 'Rs.'}
+        currency={storeConfig.theme.currency}
         appliedDiscountPercent={appliedDiscountPercent}
         paymentMethods={storeConfig.paymentMethods}
         onOrderPlaced={handleOrderPlaced}
@@ -916,7 +845,7 @@ export default function App() {
       <ProductDetailModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
-        currency={storeConfig.theme?.currency || 'Rs.'}
+        currency={storeConfig.theme.currency}
         isWishlisted={quickViewProduct ? wishlistIds.includes(quickViewProduct.id) : false}
         onAddToCart={handleAddToCart}
         onToggleWishlist={handleToggleWishlist}
@@ -927,7 +856,7 @@ export default function App() {
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         products={products}
-        currency={storeConfig.theme?.currency || 'Rs.'}
+        currency={storeConfig.theme.currency}
         onSelectProduct={(p) => {
           handleOpenProductPage(p);
           setIsSearchOpen(false);
@@ -945,7 +874,7 @@ export default function App() {
         isOpen={isWishlistOpen}
         onClose={() => setIsWishlistOpen(false)}
         wishlistProducts={wishlistProducts}
-        currency={storeConfig.theme?.currency || 'Rs.'}
+        currency={storeConfig.theme.currency}
         onAddToCart={(p) => handleAddToCart(p, 1)}
         onRemoveWishlist={handleToggleWishlist}
         onSelectProduct={(p) => {
