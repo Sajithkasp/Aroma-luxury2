@@ -63,15 +63,19 @@ export const ProductGridBlock: React.FC<ProductGridBlockProps> = ({
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
 
-  if (!config.visible && !isAdmin) return null;
+  if (config?.visible === false && !isAdmin) return null;
 
-  // Filter products by category and search query
-  const filteredProducts = products.filter((p) => {
-    const matchesCategory = selectedCategory === 'All' || p.category.toLowerCase() === selectedCategory.toLowerCase();
-    const matchesSearch = !searchQuery.trim() || 
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.category.toLowerCase().includes(searchQuery.toLowerCase());
+  // Filter products by category and search query with complete null safety
+  const safeProducts = Array.isArray(products) ? products : [];
+  const filteredProducts = safeProducts.filter((p) => {
+    if (!p) return false;
+    const pCategory = (p.category || 'All').toLowerCase();
+    const pTitle = (p.title || '').toLowerCase();
+    const pDesc = (p.description || '').toLowerCase();
+    const q = (searchQuery || '').trim().toLowerCase();
+
+    const matchesCategory = selectedCategory === 'All' || pCategory === selectedCategory.toLowerCase();
+    const matchesSearch = !q || pTitle.includes(q) || pDesc.includes(q) || pCategory.includes(q);
     return matchesCategory && matchesSearch;
   });
 

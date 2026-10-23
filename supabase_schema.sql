@@ -17,12 +17,14 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE IF NOT EXISTS public.store_config (
     id TEXT PRIMARY KEY DEFAULT 'default',
     theme JSONB NOT NULL DEFAULT '{
-        "fontColor": "#111827",
-        "accentColor": "#6366f1",
-        "bgColor": "#ffffff",
-        "cardBgColor": "#f9fafb",
-        "fontFamily": "Inter, sans-serif",
-        "borderRadius": "0.75rem"
+        "palette": "aurora-luxe",
+        "fontStyle": "serif",
+        "currency": "Rs.",
+        "borderRadius": "md",
+        "fontColor": "#121212",
+        "accentColor": "#b58d4a",
+        "bgColor": "#faf8f5",
+        "cardBgColor": "#ffffff"
     }'::jsonb,
     header JSONB NOT NULL DEFAULT '{
         "storeName": "AURORA LUXE",
@@ -31,69 +33,123 @@ CREATE TABLE IF NOT EXISTS public.store_config (
         "showAnnouncement": true,
         "announcementText": "⚡ Free Express Shipping on all islandwide orders over Rs. 5,000!",
         "navLinks": [
-            {"label": "Home", "href": "#"},
-            {"label": "Collection", "href": "#products"},
-            {"label": "Categories", "href": "#categories"},
-            {"label": "Reviews", "href": "#reviews"},
-            {"label": "Contact", "href": "#contact"}
+            {"id": "nav-1", "label": "Home", "href": "#"},
+            {"id": "nav-2", "label": "Collection", "href": "#products"},
+            {"id": "nav-3", "label": "Categories", "href": "#categories"},
+            {"id": "nav-4", "label": "Reviews", "href": "#reviews"},
+            {"id": "nav-5", "label": "Contact", "href": "#contact"}
         ]
     }'::jsonb,
     hero JSONB NOT NULL DEFAULT '{
+        "visible": true,
         "title": "Redefine Your Lifestyle With Timeless Elegance",
         "subtitle": "Discover hand-crafted masterpieces, luxury accessories, and everyday essentials built to last a lifetime.",
-        "badge": "NEW 2025 LUXURY DROP",
-        "primaryButtonText": "Shop The Collection",
-        "secondaryButtonText": "Explore Deals",
-        "bgImage": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1920&q=80"
+        "badgeText": "NEW 2026 LUXURY DROP",
+        "ctaText": "Shop The Collection",
+        "ctaSecondaryText": "Explore Deals",
+        "alignment": "split",
+        "heroImage": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1920&q=80"
     }'::jsonb,
     category_showcase JSONB NOT NULL DEFAULT '{
+        "visible": true,
         "title": "Shop By Curated Category",
-        "subtitle": "Find the perfect match for your style and home"
+        "items": [
+            {"id": "cat-1", "title": "WATCHES", "subtitle": "Timeless Craftsmanship", "image": "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=80", "icon": "watch", "linkCategory": "Watches"},
+            {"id": "cat-2", "title": "JEWELRY", "subtitle": "Exquisite & Enduring", "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80", "icon": "sparkles", "linkCategory": "Jewelry"},
+            {"id": "cat-3", "title": "LEATHER", "subtitle": "Artisan Goods", "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80", "icon": "bag", "linkCategory": "Leather"},
+            {"id": "cat-4", "title": "AUDIO", "subtitle": "Acoustic Precision", "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80", "icon": "accessories", "linkCategory": "Audio"}
+        ]
     }'::jsonb,
     product_grid JSONB NOT NULL DEFAULT '{
+        "visible": true,
         "title": "Trending Essentials",
-        "subtitle": "Most sought-after premium items chosen by our community"
+        "subtitle": "Most sought-after premium items chosen by our community",
+        "columns": 4,
+        "showCategories": true
     }'::jsonb,
     value_props JSONB NOT NULL DEFAULT '{
+        "visible": true,
         "title": "The Aurora Luxe Guarantee",
-        "subtitle": "Uncompromising quality, worldwide delivery, and personalized customer care"
+        "items": [
+            {"id": "vp-1", "icon": "truck", "title": "Island-wide Express Delivery", "description": "Doorstep delivery within 1-3 business days."},
+            {"id": "vp-2", "icon": "shield", "title": "Authenticity Guaranteed", "description": "100% genuine certified luxury products."},
+            {"id": "vp-3", "icon": "refresh", "title": "7-Day Easy Returns", "description": "Hassle-free doorstep pickup exchanges."},
+            {"id": "vp-4", "icon": "sparkles", "title": "Cash on Delivery", "description": "Pay cash or LankaQR upon delivery."}
+        ]
     }'::jsonb,
     promo_banner JSONB NOT NULL DEFAULT '{
+        "visible": true,
+        "tag": "SPECIAL INVITATION",
         "title": "VIP Members Special - Get 15% Off",
-        "subtitle": "Subscribe to our priority club for secret coupon drops and VIP releases",
-        "buttonText": "Claim VIP Code",
-        "badge": "LIMITED TIME"
+        "description": "Subscribe to our priority club for secret coupon drops and VIP releases",
+        "ctaText": "Claim VIP Code",
+        "discountCode": "AURORA15",
+        "discountPercent": 15,
+        "bgStyle": "dark"
     }'::jsonb,
     testimonials JSONB NOT NULL DEFAULT '{
+        "visible": true,
         "title": "Loved By Discerning Shoppers",
-        "subtitle": "Verified reviews from satisfied customers across the island and beyond"
+        "subtitle": "Verified reviews from satisfied customers across the island and beyond",
+        "items": [
+            {"id": "t-1", "author": "Dr. Nishantha Silva", "role": "Colombo 07", "quote": "The automatic timepiece exceeded all expectations. Exceptional build quality and swift delivery.", "rating": 5},
+            {"id": "t-2", "author": "Amanda Perera", "role": "Kandy", "quote": "The leather messenger bag is stunning. The aroma of genuine buffalo leather is unmistakable.", "rating": 5}
+        ]
     }'::jsonb,
     faq JSONB NOT NULL DEFAULT '{
+        "visible": true,
         "title": "Frequently Asked Questions",
-        "subtitle": "Everything you need to know about our products, delivery, and guarantees"
+        "subtitle": "Everything you need to know about our products, delivery, and guarantees",
+        "items": [
+            {"id": "faq-1", "question": "Do you deliver islandwide?", "answer": "Yes! We deliver to any address across Sri Lanka via Koombiyo and Pronto Express.", "category": "Delivery", "enabled": true},
+            {"id": "faq-2", "question": "Can I pay Cash on Delivery?", "answer": "Yes, Cash on Delivery (COD) is available islandwide.", "category": "Payment", "enabled": true}
+        ]
     }'::jsonb,
     contact JSONB NOT NULL DEFAULT '{
+        "visible": true,
         "title": "We Are Here To Help",
         "subtitle": "Have a custom order or need product advice? Reach out anytime.",
         "phone": "+94 77 123 4567",
         "email": "concierge@auroraluxe.com",
-        "address": "45 Galle Road, Colombo 03, Sri Lanka"
+        "address": "45 Galle Road, Colombo 03, Sri Lanka",
+        "newsletterTitle": "LET''S STAY IN TOUCH",
+        "newsletterSubtitle": "Be the first to know about new arrivals and exclusive offers.",
+        "showNewsletter": true,
+        "showContactForm": true
     }'::jsonb,
     footer JSONB NOT NULL DEFAULT '{
-        "copyright": "© 2025 Aurora Luxe Inc. All rights reserved.",
-        "aboutText": "Dedicated to offering premier craftsmanship, fair pricing, and remarkable customer experiences."
+        "visible": true,
+        "copyrightText": "© 2026 Aurora Luxe Inc. All rights reserved.",
+        "aboutText": "Dedicated to offering premier craftsmanship, fair pricing, and remarkable customer experiences.",
+        "showSocials": true,
+        "phone": "+94 77 123 4567",
+        "email": "concierge@auroraluxe.com",
+        "address": "45 Galle Road, Colombo 03, Sri Lanka",
+        "socialLinks": [
+            {"id": "soc-1", "platform": "instagram", "url": "https://instagram.com", "enabled": true},
+            {"id": "soc-2", "platform": "facebook", "url": "https://facebook.com", "enabled": true},
+            {"id": "soc-3", "platform": "whatsapp", "url": "https://whatsapp.com", "enabled": true}
+        ]
     }'::jsonb,
-    trust_badges JSONB NOT NULL DEFAULT '[]'::jsonb,
+    trust_badges JSONB NOT NULL DEFAULT '{"visible": false, "items": []}'::jsonb,
     flash_sale JSONB NOT NULL DEFAULT '{
-        "enabled": false,
+        "visible": false,
         "title": "Midnight Flash Sale",
-        "discountPercentage": 20,
-        "endsAt": "2025-12-31T23:59:59.000Z"
+        "subtitle": "Special limited batch allocation",
+        "endsAt": "2026-12-31T23:59:59",
+        "badgeText": "FLASH SALE",
+        "discountCode": "AURORA20",
+        "discountPercent": 20,
+        "ctaText": "Claim Offer"
     }'::jsonb,
     legal_documents JSONB NOT NULL DEFAULT '[]'::jsonb,
-    payment_methods JSONB NOT NULL DEFAULT '["cod", "card", "bank_transfer"]'::jsonb,
-    custom_cart_button JSONB DEFAULT NULL,
-    block_order JSONB NOT NULL DEFAULT '["announcement", "header", "hero", "categories", "products", "value_props", "promo", "testimonials", "faq", "contact", "footer"]'::jsonb,
+    payment_methods JSONB NOT NULL DEFAULT '[
+        {"id": "pay-cod", "name": "Cash on Delivery (COD)", "description": "Pay in cash or LankaQR upon doorstep delivery", "enabled": true, "type": "cod"},
+        {"id": "pay-card", "name": "Credit / Debit Card", "description": "Visa, MasterCard, American Express", "enabled": true, "type": "card"},
+        {"id": "pay-bank", "name": "Direct Bank Transfer", "description": "Commercial Bank / HNB transfer", "enabled": true, "type": "bank_transfer", "instructions": "Commercial Bank | Acc: 1000-849201 | Aurora Luxe"}
+    ]'::jsonb,
+    custom_cart_button JSONB DEFAULT '{"visible": true, "text": "Order via WhatsApp", "url": "https://wa.me/94771234567", "style": "whatsapp"}'::jsonb,
+    block_order JSONB NOT NULL DEFAULT '["hero", "categoryShowcase", "products", "valueProps", "promoBanner", "testimonials", "faq", "contact", "footer"]'::jsonb,
     categories JSONB NOT NULL DEFAULT '["All", "Watches", "Leather", "Audio", "Home Decor", "Accessories"]'::jsonb,
     free_shipping_threshold NUMERIC NOT NULL DEFAULT 5000,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -325,4 +381,27 @@ VALUES
 ('prod-4', 'Minimalist Walnut Wireless Fast Charger', 9800, 4200, 12500, 'Accessories', 'https://images.unsplash.com/photo-1586105251261-72a756497a11?auto=format&fit=crop&w=800&q=80', '["https://images.unsplash.com/photo-1586105251261-72a756497a11?auto=format&fit=crop&w=800&q=80"]'::jsonb, 'Solid American walnut block seamlessly embedded with 15W Qi-certified fast inductive charging array.', 'TRENDING', true, 4.7, 95, false),
 ('prod-5', 'Nordic Ceramic Minimalist Vase Set', 14500, 6800, 18000, 'Home Decor', 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=800&q=80', '["https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=800&q=80"]'::jsonb, 'Matte textured hand-spun ceramic duo designed for dry botanical and minimalist architectural arrangements.', 'HOT', true, 4.9, 64, true),
 ('prod-6', 'Japanese Damascus Steel Chef Cleaver 8"', 22500, 10500, 28000, 'Accessories', 'https://images.unsplash.com/photo-1593618998160-e34014e67546?auto=format&fit=crop&w=800&q=80', '["https://images.unsplash.com/photo-1593618998160-e34014e67546?auto=format&fit=crop&w=800&q=80"]'::jsonb, '67 layers of forged VG-10 high carbon Damascus steel with stabilized pakkawood ergonomic grip.', 'EXCLUSIVE', true, 4.8, 52, false)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+    block_order = '["hero", "categoryShowcase", "products", "valueProps", "promoBanner", "testimonials", "faq", "contact", "footer"]'::jsonb,
+    updated_at = now();
+
+-- Ensure any existing 'default' configuration has full visible flags
+UPDATE public.store_config
+SET 
+    block_order = '["hero", "categoryShowcase", "products", "valueProps", "promoBanner", "testimonials", "faq", "contact", "footer"]'::jsonb,
+    theme = jsonb_set(
+        COALESCE(theme, '{}'::jsonb),
+        '{palette}',
+        '"aurora-luxe"'
+    ),
+    hero = jsonb_set(COALESCE(hero, '{}'::jsonb), '{visible}', 'true'::jsonb),
+    category_showcase = jsonb_set(COALESCE(category_showcase, '{}'::jsonb), '{visible}', 'true'::jsonb),
+    product_grid = jsonb_set(COALESCE(product_grid, '{}'::jsonb), '{visible}', 'true'::jsonb),
+    value_props = jsonb_set(COALESCE(value_props, '{}'::jsonb), '{visible}', 'true'::jsonb),
+    promo_banner = jsonb_set(COALESCE(promo_banner, '{}'::jsonb), '{visible}', 'true'::jsonb),
+    testimonials = jsonb_set(COALESCE(testimonials, '{}'::jsonb), '{visible}', 'true'::jsonb),
+    faq = jsonb_set(COALESCE(faq, '{}'::jsonb), '{visible}', 'true'::jsonb),
+    contact = jsonb_set(COALESCE(contact, '{}'::jsonb), '{visible}', 'true'::jsonb),
+    footer = jsonb_set(COALESCE(footer, '{}'::jsonb), '{visible}', 'true'::jsonb)
+WHERE id = 'default';
+

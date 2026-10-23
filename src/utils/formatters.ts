@@ -1,18 +1,20 @@
 import { Currency } from '../types/store';
 
-export function formatPrice(amount: number, currency: Currency = '$'): string {
-  const formatted = amount.toLocaleString('en-US', {
-    minimumFractionDigits: amount % 1 === 0 ? 0 : 2,
+export function formatPrice(amount: number | undefined | null, currency: Currency = '$'): string {
+  const safeAmount = typeof amount === 'number' && !isNaN(amount) ? amount : 0;
+  const safeCurrency = currency || '$';
+  const formatted = safeAmount.toLocaleString('en-US', {
+    minimumFractionDigits: safeAmount % 1 === 0 ? 0 : 2,
     maximumFractionDigits: 2,
   });
 
-  if (currency === 'Rs.' || currency === 'LKR') {
-    return `${currency} ${formatted}`;
+  if (safeCurrency === 'Rs.' || safeCurrency === 'LKR') {
+    return `${safeCurrency} ${formatted}`;
   }
-  if (currency === '€') {
+  if (safeCurrency === '€') {
     return `${formatted} €`;
   }
-  return `${currency}${formatted}`;
+  return `${safeCurrency}${formatted}`;
 }
 
 export function calculateDiscount(originalPrice?: number, currentPrice?: number): number {

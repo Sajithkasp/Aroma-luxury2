@@ -724,18 +724,18 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen theme-container theme-${storeConfig.theme.palette}`}
+      className={`min-h-screen theme-container theme-${storeConfig.theme?.palette || 'aurora-luxe'}`}
       style={{
-        ...(storeConfig.theme.fontColor
+        ...(storeConfig.theme?.fontColor
           ? { color: storeConfig.theme.fontColor, '--text-primary': storeConfig.theme.fontColor }
           : {}),
-        ...(storeConfig.theme.accentColor
+        ...(storeConfig.theme?.accentColor
           ? { '--accent-color': storeConfig.theme.accentColor }
           : {}),
-        ...(storeConfig.theme.bgColor
+        ...(storeConfig.theme?.bgColor
           ? { backgroundColor: storeConfig.theme.bgColor, '--bg-primary': storeConfig.theme.bgColor }
           : {}),
-        ...(storeConfig.theme.cardBgColor
+        ...(storeConfig.theme?.cardBgColor
           ? { '--card-bg': storeConfig.theme.cardBgColor }
           : {}),
       } as React.CSSProperties}
@@ -764,7 +764,7 @@ export default function App() {
       <div className={viewportContainerClass}>
         {/* Header Block adhering to Top Bar Contract */}
         <Header
-          config={storeConfig.header}
+          config={storeConfig.header || DEFAULT_STORE_CONFIG.header}
           isAdmin={isAdmin}
           cartCount={cartItems.reduce((acc, it) => acc + it.quantity, 0)}
           wishlistCount={wishlistIds.length}
@@ -781,7 +781,7 @@ export default function App() {
           {activeProductPage ? (
             <ProductDetailPage
               product={activeProductPage}
-              currency={storeConfig.theme.currency}
+              currency={storeConfig.theme?.currency || 'Rs.'}
               isAdmin={isAdmin}
               isWishlisted={wishlistIds.includes(activeProductPage.id)}
               allProducts={products}
@@ -801,7 +801,10 @@ export default function App() {
               onSelectProduct={handleOpenProductPage}
             />
           ) : (
-            storeConfig.blockOrder.map((blockId, index) => renderBlock(blockId, index))
+            (storeConfig.blockOrder && storeConfig.blockOrder.length > 0
+              ? storeConfig.blockOrder
+              : DEFAULT_STORE_CONFIG.blockOrder
+            ).map((blockId, index) => renderBlock(blockId, index))
           )}
         </main>
       </div>
