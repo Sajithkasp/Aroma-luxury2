@@ -1,0 +1,6 @@
+{
+  "name": "Aura Store Studio",
+  "description": "Fully customizable modular e-commerce storefront and visual block builder with real-time inline product editing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
